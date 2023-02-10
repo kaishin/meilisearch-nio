@@ -1,6 +1,6 @@
 import Foundation
 
 public struct Health: Codable, Equatable {
-  /// Status of the MeiliSearch server
+  /// Status of the Meilisearch server
   public let status: String
 }

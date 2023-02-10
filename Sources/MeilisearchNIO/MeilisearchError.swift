@@ -1,6 +1,6 @@
 import Foundation
 
-public enum MeiliSearchError: Error {
+public enum MeilisearchError: Error {
   case missingConfiguration(String)
   case missingResponseData
   case malformedRequestURL

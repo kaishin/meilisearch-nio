@@ -3,7 +3,7 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   /// Get stats of an index.
   /// - Parameters:
   ///   - indexID: The index UID to search in.

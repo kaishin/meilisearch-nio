@@ -1,32 +1,42 @@
-import Foundation
 import AsyncHTTPClient
-import NIOHTTP1
+import Foundation
 import NIO
+import NIOHTTP1
 
-public struct MeiliSearchClient {
-  public var host: () -> String
-  public var adminAPIKey: () -> String?
-  public var network: () -> NetworkClient
-  public var defaultDecoder: () -> JSONDecoder
+public struct MeilisearchClient {
+  var host: String
+  var adminAPIKey: String?
+  var network: NetworkClient
+  var defaultDecoder: JSONDecoder
 
   public init(
-    host: @escaping @autoclosure () -> String,
-    adminAPIKey: @escaping @autoclosure () -> String?,
-    network: @escaping @autoclosure () -> NetworkClient,
-    defaultDecoder: @escaping @autoclosure () -> JSONDecoder
-  ) {
-    self.host = host
+    httpClient: HTTPClient,
+    decoder: JSONDecoder = Self.defaultJSONDecoder
+  ) throws {
+    guard 
+      let url = Environment[ConfigKeys.url]
+    else {
+      throw MeilisearchError.missingConfiguration(ConfigKeys.url.rawValue)
+    }
+
+    guard 
+      let adminAPIKey = Environment[ConfigKeys.apiKey]
+    else {
+      throw MeilisearchError.missingConfiguration(ConfigKeys.apiKey.rawValue)
+    }
+
+    self.host = url
     self.adminAPIKey = adminAPIKey
-    self.network = network
-    self.defaultDecoder = defaultDecoder
+    self.network = .live(with: httpClient)
+    self.defaultDecoder = decoder
   }
 
   var hostURL: URL? {
-    URL(string: host())
+    URL(string: host)
   }
 }
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   func httpRequest(from request: Request) throws -> HTTPClient.Request {
     // Headers
     var headers = HTTPHeaders()
@@ -35,12 +45,7 @@ extension MeiliSearchClient {
       headers.add(name: header.key, value: header.value)
     }
 
-    if headers.contains(name: .authorization) == false,
-       let adminKey = adminAPIKey() {
-      headers.add(name: .authorization, value: "Bearer \(adminKey)")
-    }
-
-    return try HTTPClient.Request(
+    return try .init(
       url: try requestURL(for: request),
       method: request.method,
       headers: headers,
@@ -50,7 +55,7 @@ extension MeiliSearchClient {
 
   private func requestURL(for request: Request) throws -> URL {
     guard var requestURL = hostURL else {
-      throw MeiliSearchError.invalidHost
+      throw MeilisearchError.invalidHost
     }
 
     request.path.fragments.forEach {
@@ -66,27 +71,27 @@ extension MeiliSearchClient {
       url: requestURL,
       resolvingAgainstBaseURL: true
     ) else {
-      throw MeiliSearchError.malformedRequestURL
+      throw MeilisearchError.malformedRequestURL
     }
 
     components.queryItems = request.queryItems
 
     guard let urlWithQueries = components.url else {
-      throw MeiliSearchError.malformedRequestURL
+      throw MeilisearchError.malformedRequestURL
     }
 
     return urlWithQueries
   }
 }
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   func send(
     _ path: URLPath,
     _ middleware: @escaping RequestMiddleware = identity,
     on eventLoop: EventLoop? = nil
   ) async throws -> HTTPClient.Response {
     let httpRequest = try httpRequest(from: middleware(.init(path: path)))
-    return try await network().send(httpRequest, eventLoop)
+    return try await network.send(httpRequest, eventLoop)
   }
 
   func send<T>(
@@ -98,8 +103,10 @@ extension MeiliSearchClient {
     let response: HTTPClient.Response = try await send(path, middleware, on: eventLoop)
     let requestDecoder = decoder ?? Self.defaultJSONDecoder
 
-    guard let responseData = response.body else {
-      throw MeiliSearchError.missingResponseData
+    guard 
+      let responseData = response.body
+    else {
+      throw MeilisearchError.missingResponseData
     }
 
     if 400...599 ~= response.status.code {
@@ -121,8 +128,10 @@ extension MeiliSearchClient {
   ) async throws {
     let response: HTTPClient.Response = try await send(path, middleware, on: eventLoop)
 
-    guard let responseData = response.body else {
-      throw MeiliSearchError.missingResponseData
+    guard 
+      let responseData = response.body
+    else {
+      throw MeilisearchError.missingResponseData
     }
 
     if 400...599 ~= response.status.code {
@@ -136,47 +145,16 @@ extension MeiliSearchClient {
   }
 }
 
-public extension MeiliSearchClient {
-  static let defaultJSONDecoder: JSONDecoder = {
+extension MeilisearchClient {
+  public static let defaultJSONDecoder: JSONDecoder = {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .formatted(Formatter.iso8601)
     return decoder
   }()
 
-  static let defaultJSONEncoder: JSONEncoder = {
+  public static let defaultJSONEncoder: JSONEncoder = {
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .formatted(Formatter.iso8601)
     return encoder
-  }()
-
-  static func live(
-    httpClient: HTTPClient,
-    decoder: JSONDecoder = Self.defaultJSONDecoder
-  ) throws -> Self {
-    guard let url = Environment[ConfigKeys.url]
-    else {
-      throw MeiliSearchError.missingConfiguration(ConfigKeys.url.rawValue)
-    }
-
-    guard let adminAPIKey = Environment[ConfigKeys.apiKey]
-    else {
-      throw MeiliSearchError.missingConfiguration(ConfigKeys.apiKey.rawValue)
-    }
-
-    return .init(
-      host: url,
-      adminAPIKey: adminAPIKey,
-      network: .live(with: httpClient),
-      defaultDecoder: decoder
-    )
-  }
-
-  static let mock: Self = {
-    .init(
-      host: "localhost",
-      adminAPIKey: "",
-      network: .mock,
-      defaultDecoder: Self.defaultJSONDecoder
-    )
   }()
 }

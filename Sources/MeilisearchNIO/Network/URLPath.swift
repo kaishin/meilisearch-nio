@@ -1,7 +1,7 @@
 import Foundation
 
 struct URLPath {
-  public var fragments: [String]
+  var fragments: [String]
 }
 
 extension URLPath: ExpressibleByStringLiteral {

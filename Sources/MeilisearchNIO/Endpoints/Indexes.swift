@@ -3,7 +3,7 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   /// Get information about an index.
   ///
   /// [Official documentation]( https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)

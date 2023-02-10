@@ -1,29 +1,29 @@
-import Foundation
 import AsyncHTTPClient
+import Foundation
 import NIO
 import NIOFoundationCompat
 
-public struct NetworkClient {
-  public typealias RequestResponse = (
+struct NetworkClient {
+  typealias RequestResponse = (
     _ request: HTTPClient.Request,
     _ on: EventLoop?
   ) async throws -> HTTPClient.Response
 
-  public var send: RequestResponse
+  var send: RequestResponse
 
-  public init(
+  init(
     send: @escaping RequestResponse
   ) {
     self.send = send
   }
 }
 
-public extension NetworkClient {
+extension NetworkClient {
   static func live(with client: HTTPClient) -> Self {
     .init(
       send: { request, eventLoop in
         let eventLoopPreference: HTTPClient.EventLoopPreference = {
-          if let eventLoop = eventLoop {
+          if let eventLoop {
             return .delegate(on: eventLoop)
           } else {
             return .indifferent

@@ -3,7 +3,7 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getDocument<T>(
     _ documentID: String,
     in indexUID: String,

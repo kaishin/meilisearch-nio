@@ -3,7 +3,7 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   /// Search for documents matching a specific query in the given index.
   /// - Parameters:
   ///   - indexID: The index UID to search in.

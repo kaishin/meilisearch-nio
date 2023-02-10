@@ -3,7 +3,7 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   /// Get the status of an update in a given index.
   /// - Parameters:
   ///   - taskID: The ID of the update.
@@ -65,7 +65,7 @@ extension MeiliSearchClient {
     if result.status.isCompleted {
       return result
     } else if 0 - startingDate.timeIntervalSinceNow > options.timeOut {
-      throw MeiliSearchError.timeOut(timeOut: options.timeOut)
+      throw MeilisearchError.timeOut(timeOut: options.timeOut)
     } else {
       try await Task.sleep(nanoseconds: UInt64(options.interval) * 1_000_000_000)
       return try await checkStatus(for: task, in: indexUID, options: options, startingDate: startingDate, on: eventLoop)

@@ -3,7 +3,7 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -41,7 +41,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Synonyms
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getSynonyms(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -79,7 +79,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Stop Words
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getStopWords(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -116,7 +116,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Ranking Rules
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getRankingRules(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -154,7 +154,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Distinct Attribute
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getDistinctAttribute(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -192,7 +192,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Searchable Attributes
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getSearchableAttributes(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -230,7 +230,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Displayed Attributes
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getDisplayedAttributes(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -268,7 +268,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Filterable Attributes
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getFilterableAttributes(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -306,7 +306,7 @@ extension MeiliSearchClient {
 }
 
 // MARK: - Sortable Attributes
-extension MeiliSearchClient {
+extension MeilisearchClient {
   public func getSortableAttributes(
     for indexID: String,
     on eventLoop: EventLoop? = nil

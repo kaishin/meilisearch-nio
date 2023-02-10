@@ -9,7 +9,7 @@ public struct MeiliTask: Codable {
   public let enqueuedAt: Date
   public let startedAt: Date?
   public let finishedAt: Date?
-  // TODO: Add details https://github.com/meilisearch/MeiliSearch/blob/fa196986c2d8c1bed6ce4fc0c80d079755b3b71f/meilisearch-http/src/task.rs#L57
+  // TODO: Add details https://github.com/meilisearch/Meilisearch/blob/fa196986c2d8c1bed6ce4fc0c80d079755b3b71f/meilisearch-http/src/task.rs#L57
 }
 
 public extension MeiliTask {

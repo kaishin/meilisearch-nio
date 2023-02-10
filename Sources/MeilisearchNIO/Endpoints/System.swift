@@ -3,8 +3,8 @@ import NIOHTTP1
 import NIO
 import AsyncHTTPClient
 
-extension MeiliSearchClient {
-  /// Get health of MeiliSearch server.
+extension MeilisearchClient {
+  /// Get health of Meilisearch server.
   /// - Parameters:
   ///   - eventLoop: The event loop to run the query on.
   /// - Returns: The health status.
@@ -18,7 +18,7 @@ extension MeiliSearchClient {
     )
   }
 
-  /// Get version of MeiliSearch.
+  /// Get version of Meilisearch.
   /// - Parameters:
   ///   - eventLoop: The event loop to run the query on.
   /// - Returns: The version number.

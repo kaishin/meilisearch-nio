@@ -2,7 +2,7 @@ import Foundation
 import NIOHTTP1
 import NIO
 
-extension MeiliSearchClient {
+extension MeilisearchClient {
   /// Get the private and public key.
   ///
   /// - Warning: You must have the master key to access this route.

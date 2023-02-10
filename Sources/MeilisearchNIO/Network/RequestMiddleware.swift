@@ -12,9 +12,9 @@ func requestHeader(
   value: String
 ) -> RequestMiddleware {
   { request in
-    var newRequest = request
-    newRequest.headers[key] = value
-    return newRequest
+    var copy = request
+    copy.headers[key] = value
+    return copy
   }
 }
 
@@ -22,9 +22,9 @@ func requestMethod(
   _ method: HTTPMethod
 ) -> RequestMiddleware {
   { request in
-    var newRequest = request
-    newRequest.method = method
-    return newRequest
+    var copy = request
+    copy.method = method
+    return copy
   }
 }
 
@@ -32,9 +32,9 @@ func requestBody(
   _ data: Data
 ) -> RequestMiddleware {
   { request in
-    var newRequest = request
-    newRequest.body = ByteBuffer(bytes: data)
-    return newRequest
+    var copy = request
+    copy.body = ByteBuffer(bytes: data)
+    return copy
   }
 }
 
@@ -44,11 +44,11 @@ func requestBody<T>(
 ) -> RequestMiddleware where T: Encodable {
   { request in
     guard request.method != .GET else { return request }
-    var newRequest = request
-    newRequest.body = ByteBuffer(
+    var copy = request
+    copy.body = ByteBuffer(
       bytes: try encoder.encode(content)
     )
-    return newRequest
+    return copy
   }
 }
 
@@ -56,14 +56,14 @@ func requestQueries(
   _ content: [String: String]
 ) -> RequestMiddleware {
   { request in
-    var newRequest = request
-    newRequest.queryItems = content.reduce([], { items, keyValue in
+    var copy = request
+    copy.queryItems = content.reduce([], { items, keyValue in
       let item = URLQueryItem(name: keyValue.0, value: keyValue.1)
       var newItems = items
       newItems.append(item)
       return newItems
     })
-    return newRequest
+    return copy
   }
 }
 
