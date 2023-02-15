@@ -17,7 +17,7 @@ public struct MeiliConfig {
 
   func validate() throws -> Self {
     guard URL(string: url) != nil else {
-      throw MeilisearchError.invalidHost
+      throw MeilisearchNIOError.invalidHost
     }
 
     return self
@@ -25,7 +25,7 @@ public struct MeiliConfig {
 
   static func fromEnvironmentThrowing() throws -> MeiliConfig {
     guard let url = Environment[ConfigKeys.url] else {
-      throw MeilisearchError.missingConfiguration(ConfigKeys.url.rawValue)
+      throw MeilisearchNIOError.missingConfiguration(ConfigKeys.url.rawValue)
     }
 
     return .init(url: url, apiKey: Environment[ConfigKeys.apiKey])
