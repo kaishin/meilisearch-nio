@@ -4,6 +4,23 @@ import NIO
 import AsyncHTTPClient
 
 extension MeilisearchClient {
+  /// List all indexes. Results can be paginated by using the offset and limit query parameters.
+  ///
+  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
+  public func listIndexes(
+    on eventLoop: EventLoop? = nil,
+    offset: Int = 0,
+    limit: Int = 20
+  ) async throws -> Page<Index> {
+    try await send(
+      .indexes,
+      requestQueries(
+        ["offset": offset.description, "limit": limit.description]
+      ),
+      on: eventLoop
+    )
+  }
+
   /// Get information about an index.
   ///
   /// [Official documentation]( https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
@@ -13,19 +30,6 @@ extension MeilisearchClient {
   ) async throws -> Index {
     try await send(
       .indexes / indexUID,
-      on: eventLoop
-    )
-  }
-
-  /// List all indexes.
-  ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
-  public func listIndexes(
-    _ indexUID: String,
-    on eventLoop: EventLoop? = nil
-  ) async throws -> [Index] {
-    try await send(
-      .indexes,
       on: eventLoop
     )
   }

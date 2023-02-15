@@ -7,7 +7,7 @@ extension MeilisearchClient {
   public func getSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> SettingResult {
+  ) async throws -> Settings {
     try await send(
       .indexes / indexID / .settings,
       on: eventLoop
@@ -16,7 +16,7 @@ extension MeilisearchClient {
 
   @discardableResult
   public func updateSettings(
-    with setting: Setting,
+    with setting: Settings,
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> MeiliTask {

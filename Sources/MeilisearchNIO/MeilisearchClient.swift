@@ -5,28 +5,36 @@ import NIOHTTP1
 
 public struct MeilisearchClient {
   var host: String
-  var adminAPIKey: String?
+  var apiKey: String?
   var network: NetworkClient
   var defaultDecoder: JSONDecoder
 
+  init(
+    networkClient: NetworkClient,
+    decoder: JSONDecoder = Self.defaultJSONDecoder,
+    host: String? = nil,
+    apiKey: String? = nil
+  ) {
+    self.host = host ?? Environment[ConfigKeys.url] ?? "http://localhost:7700"
+    self.apiKey = apiKey ?? Environment[ConfigKeys.apiKey]
+    self.network = networkClient
+    self.defaultDecoder = decoder
+  }
+
   public init(
     httpClient: HTTPClient,
-    decoder: JSONDecoder = Self.defaultJSONDecoder
+    decoder: JSONDecoder = Self.defaultJSONDecoder,
+    host: String? = nil,
+    apiKey: String? = nil
   ) throws {
     guard 
-      let url = Environment[ConfigKeys.url]
+      let hostUrl = host ?? Environment[ConfigKeys.url]
     else {
-      throw MeilisearchError.missingConfiguration(ConfigKeys.url.rawValue)
+      throw MeilisearchNIOError.missingConfiguration(ConfigKeys.url.rawValue)
     }
 
-    guard 
-      let adminAPIKey = Environment[ConfigKeys.apiKey]
-    else {
-      throw MeilisearchError.missingConfiguration(ConfigKeys.apiKey.rawValue)
-    }
-
-    self.host = url
-    self.adminAPIKey = adminAPIKey
+    self.host = hostUrl
+    self.apiKey = apiKey ?? Environment[ConfigKeys.apiKey]
     self.network = .live(with: httpClient)
     self.defaultDecoder = decoder
   }
@@ -45,8 +53,15 @@ extension MeilisearchClient {
       headers.add(name: header.key, value: header.value)
     }
 
+    if headers.contains(name: .authorization) == false,
+      let apiKey {
+      headers.add(name: .authorization, value: "Bearer \(apiKey)")
+    }
+
+    let url = try requestURL(for: request)
+
     return try .init(
-      url: try requestURL(for: request),
+      url: url,
       method: request.method,
       headers: headers,
       body: request.body.map { .byteBuffer($0) }
@@ -55,7 +70,7 @@ extension MeilisearchClient {
 
   private func requestURL(for request: Request) throws -> URL {
     guard var requestURL = hostURL else {
-      throw MeilisearchError.invalidHost
+      throw MeilisearchNIOError.invalidHost
     }
 
     request.path.fragments.forEach {
@@ -71,13 +86,13 @@ extension MeilisearchClient {
       url: requestURL,
       resolvingAgainstBaseURL: true
     ) else {
-      throw MeilisearchError.malformedRequestURL
+      throw MeilisearchNIOError.malformedRequestURL
     }
 
     components.queryItems = request.queryItems
 
     guard let urlWithQueries = components.url else {
-      throw MeilisearchError.malformedRequestURL
+      throw MeilisearchNIOError.malformedRequestURL
     }
 
     return urlWithQueries
@@ -90,7 +105,10 @@ extension MeilisearchClient {
     _ middleware: @escaping RequestMiddleware = identity,
     on eventLoop: EventLoop? = nil
   ) async throws -> HTTPClient.Response {
-    let httpRequest = try httpRequest(from: middleware(.init(path: path)))
+    let httpRequest = try httpRequest(
+      from: middleware(.init(path: path))
+    )
+
     return try await network.send(httpRequest, eventLoop)
   }
 
@@ -106,7 +124,7 @@ extension MeilisearchClient {
     guard 
       let responseData = response.body
     else {
-      throw MeilisearchError.missingResponseData
+      throw MeilisearchNIOError.missingResponseData
     }
 
     if 400...599 ~= response.status.code {
@@ -131,7 +149,7 @@ extension MeilisearchClient {
     guard 
       let responseData = response.body
     else {
-      throw MeilisearchError.missingResponseData
+      throw MeilisearchNIOError.missingResponseData
     }
 
     if 400...599 ~= response.status.code {

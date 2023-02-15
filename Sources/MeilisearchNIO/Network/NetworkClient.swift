@@ -3,15 +3,15 @@ import Foundation
 import NIO
 import NIOFoundationCompat
 
-struct NetworkClient {
-  typealias RequestResponse = (
+public struct NetworkClient {
+  public typealias RequestResponse = (
     _ request: HTTPClient.Request,
     _ on: EventLoop?
   ) async throws -> HTTPClient.Response
 
-  var send: RequestResponse
+  public var send: RequestResponse
 
-  init(
+  public init(
     send: @escaping RequestResponse
   ) {
     self.send = send
