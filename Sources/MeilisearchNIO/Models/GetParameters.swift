@@ -8,24 +8,27 @@ public struct GetParameters: Codable, Equatable {
   public let offset: Int
 
   /// Document attributes to show.
-  public let attributesToRetrieve: [String]
+  public let fields: [String]
 
   public init(
     offset: Int = 0,
     limit: Int = 20,
-    attributesToRetrieve: [String] = ["*"]
+    fields: [String] = []
   ) {
     self.offset = offset
     self.limit = limit
-    self.attributesToRetrieve = attributesToRetrieve
+    self.fields = fields
   }
 
   func toQueryParameters() -> [String: String] {
     var queries = [String: String]()
 
-      queries["offset"] = offset.description
-      queries["limit"] = limit.description
-      queries["attributesToRetrieve"] = attributesToRetrieve.joined(separator: ",")
+    queries["offset"] = offset.description
+    queries["limit"] = limit.description
+
+    if !fields.isEmpty {
+      queries["fields"] = fields.joined(separator: ",")
+    }
 
     return queries
   }
