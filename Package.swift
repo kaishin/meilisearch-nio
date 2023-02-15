@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "MeilisearchNIO",
+  name: "meilisearch-nio",
   platforms: [
     .macOS(.v12)
   ],
