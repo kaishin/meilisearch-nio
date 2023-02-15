@@ -42,7 +42,7 @@ extension MeilisearchClient {
     _ indexUID: String,
     primaryKey: String? = nil,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask.Reference {
     let payload = CreateIndexPayload(
       uid: indexUID,
       primaryKey: primaryKey
@@ -61,7 +61,7 @@ extension MeilisearchClient {
   public func createIndex(
     _ payload: CreateIndexPayload,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes,
       post(body: payload),
@@ -69,7 +69,7 @@ extension MeilisearchClient {
     )
   }
 
-  /// Update an index.
+  /// Update an index. You can freely update the primary key of an index as long as it contains no documents.
   ///
   /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index)
   @discardableResult
@@ -77,12 +77,12 @@ extension MeilisearchClient {
     _ indexUID: String,
     primaryKey: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> Index {
+  ) async throws -> OperationTask.Reference {
     let payload = UpdateIndexPayload(primaryKey: primaryKey)
 
     return try await send(
       .indexes / indexUID,
-      put(body: payload),
+      patch(body: payload),
       on: eventLoop
     )
   }
@@ -93,10 +93,27 @@ extension MeilisearchClient {
   public func deleteIndex(
     _ indexUID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws {
+  ) async throws -> OperationTask.Reference {
     return try await send(
       .indexes / indexUID,
       deleteRequest,
+      on: eventLoop
+    )
+  }
+
+  /// Swap the documents, settings, and task history of two or more indexes.
+  ///
+  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#swap-indexes)
+  public func swapIndexes(
+    from fromUid: String,
+    to toUid: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    let payload = SwapIndexes(indexes: [fromUid, toUid])
+
+    return try await send(
+      .swapIndexes,
+      post(body: payload),
       on: eventLoop
     )
   }

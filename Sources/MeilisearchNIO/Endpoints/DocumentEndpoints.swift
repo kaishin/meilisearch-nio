@@ -33,7 +33,7 @@ extension MeilisearchClient {
     to indexUID: String,
     primaryKey: String? = nil,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask {
     try await send(
       .indexes / indexUID / .documents,
       pipe(
@@ -52,7 +52,7 @@ extension MeilisearchClient {
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask where T: Encodable, T: Equatable {
+  ) async throws -> OperationTask where T: Encodable, T: Equatable {
     try await addOrReplaceDocuments(
       [document],
       to: indexUID,
@@ -69,7 +69,7 @@ extension MeilisearchClient {
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask where T: Encodable, T: Equatable {
+  ) async throws -> OperationTask where T: Encodable, T: Equatable {
     try await addOrUpdateDocuments(
       [document],
       to: indexUID,
@@ -86,7 +86,7 @@ extension MeilisearchClient {
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask where T: Encodable, T: Equatable {
+  ) async throws -> OperationTask where T: Encodable, T: Equatable {
     try await send(
       .indexes / indexUID / .documents,
       pipe(
@@ -105,7 +105,7 @@ extension MeilisearchClient {
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask where T: Encodable, T: Equatable {
+  ) async throws -> OperationTask where T: Encodable, T: Equatable {
     try await send(
       .indexes / indexUID / .documents,
       pipe(
@@ -122,7 +122,7 @@ extension MeilisearchClient {
     documentID: String,
     in indexUID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask {
     try await send(
       .indexes / indexUID / .documents / documentID,
       requestMethod(.DELETE),
@@ -134,7 +134,7 @@ extension MeilisearchClient {
   public func deleteAll(
     in indexUID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask {
     try await send(
       .indexes / indexUID / .documents,
       requestMethod(.DELETE),
@@ -147,7 +147,7 @@ extension MeilisearchClient {
     _ documentIDs: [T],
     in indexUID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask
+  ) async throws -> OperationTask
   where T: Encodable {
     try await send(
       .indexes / indexUID / .documents / .deleteBatch,

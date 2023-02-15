@@ -2,7 +2,16 @@ import Foundation
 
 /// Represents the current transaction status.
 /// Use the `uid` value to verify the status of a transaction.
-public struct MeiliTask: Decodable {
+public struct OperationTask: Decodable, Hashable {
+  /// An abridged model returned as a result of many operations.
+  public struct Reference: Decodable, Hashable {
+    public let taskUid: Int
+    public let indexUid: String?
+    public let status: StatusReference
+    public let enqueuedAt: Date
+    public let type: TypeReference
+  }
+
   /// Unique sequential identifier of the task.
   public let uid: Int
 
@@ -10,7 +19,7 @@ public struct MeiliTask: Decodable {
   public let enqueuedAt: Date
 
   /// Unique identifier of the targeted index.
-  public let indexUid: String
+  public let indexUid: String?
 
   /// Status of the task.
   public let status: Status
@@ -47,13 +56,13 @@ public struct MeiliTask: Decodable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     self.uid = try container.decode(Int.self, forKey: .uid)
-    self.indexUid = try container.decode(String.self, forKey: .indexUid)
+    self.indexUid = try? container.decode(String.self, forKey: .indexUid)
     self.enqueuedAt = try container.decode(Date.self, forKey: .enqueuedAt)
     self.canceledBy = try? container.decode(Int.self, forKey: .canceledBy)
     self.startedAt = try? container.decode(Date.self, forKey: .startedAt)
     self.finishedAt = try? container.decode(Date.self, forKey: .finishedAt)
     self.duration = try? container.decode(String.self, forKey: .duration)
-    let status = try container.decode(StatusKey.self, forKey: .status)
+    let status = try container.decode(StatusReference.self, forKey: .status)
 
     switch status {
     case .enqueued:
@@ -73,7 +82,7 @@ public struct MeiliTask: Decodable {
       self.status = .failed(error)
     }
 
-    let type = try container.decode(TaskTypeKey.self, forKey: .type)
+    let type = try container.decode(TypeReference.self, forKey: .type)
     switch type {
     case .documentAdditionOrUpdate:
       let details = try container.decode(Details.DocumentAdditionOrUpdate.self, forKey: .details)
@@ -121,7 +130,7 @@ public struct MeiliTask: Decodable {
   }
 }
 
-extension MeiliTask {
+extension OperationTask {
   public enum Details: Codable, Hashable {
     case documentAdditionOrUpdate(DocumentAdditionOrUpdate)
     case documentDeletion(DocumentDeletetion)
@@ -204,7 +213,7 @@ extension MeiliTask {
     }
   }
 
-  public enum StatusKey: String, Codable, Hashable {
+  public enum StatusReference: String, Codable, Hashable {
     case enqueued
     case processing
     case succeeded
@@ -224,7 +233,7 @@ extension MeiliTask {
     }
   }
 
-  public enum TaskTypeKey: String, Codable, Hashable {
+  public enum TypeReference: String, Codable, Hashable {
     case documentAdditionOrUpdate
     case documentDeletion
     case dumpCreation

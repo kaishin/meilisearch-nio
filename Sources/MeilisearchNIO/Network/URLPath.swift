@@ -63,6 +63,7 @@ extension URLPath {
   static let indexes = Self(.indexes)
   static let keys = Self(.keys)
   static let stats = Self(.stats)
+  static let swapIndexes = Self(.swapIndexes)
   static let tasks = Self(.tasks)
   static let version = Self(.version)
 }
@@ -87,6 +88,7 @@ extension String {
   static let status = "status"
   static let stopWords = "stop-words"
   static let synonyms = "synonyms"
+  static let swapIndexes = "swap-indexes"
   static let tasks = "tasks"
   static let version = "version"
 }

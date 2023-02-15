@@ -15,7 +15,7 @@ extension MeilisearchClient {
     for taskID: Int,
     in indexUID: String? = nil,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask {
     try await send(
       indexUID.map { .indexes / $0 / .tasks / taskID } ?? .tasks / taskID,
       on: eventLoop
@@ -31,7 +31,7 @@ extension MeilisearchClient {
   public func getAllTasks(
     in indexUID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> [MeiliTask] {
+  ) async throws -> [OperationTask] {
     try await send(
       .indexes / indexUID / .tasks,
       on: eventLoop
@@ -40,11 +40,11 @@ extension MeilisearchClient {
 
   @discardableResult
   public func waitForPendingTask(
-    for task: MeiliTask,
+    for task: OperationTask,
     in indexUID: String? = nil,
     options: WaitOptions? = nil,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask {
     try await checkStatus(
       for: task,
       in: indexUID,
@@ -55,12 +55,12 @@ extension MeilisearchClient {
   }
 
   private func checkStatus(
-    for task: MeiliTask,
+    for task: OperationTask,
     in indexUID: String?,
     options: WaitOptions,
     startingDate: Date,
     on eventLoop: EventLoop? = nil
-  ) async throws -> MeiliTask {
+  ) async throws -> OperationTask {
     let result = try await getTaskStatus(for: task.uid, in: indexUID, on: eventLoop)
     if result.status.isCompleted {
       return result
