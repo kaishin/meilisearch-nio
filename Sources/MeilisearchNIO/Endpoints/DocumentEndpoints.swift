@@ -6,14 +6,14 @@ import NIOHTTP1
 extension MeilisearchClient {
   /// Get a set of documents.
   ///
-  /// [Official Documentation](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
   public func getAllDocuments<T>(
     with getParameters: GetParameters = .init(),
-    in indexUID: String,
+    in indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> Page<T> where T: Codable, T: Equatable {
     try await send(
-      .indexes / indexUID / .documents,
+      .indexes / indexUid / .documents,
       requestQueries(getParameters.toQueryParameters()),
       on: eventLoop
     )
@@ -21,10 +21,10 @@ extension MeilisearchClient {
 
   /// Get one document using its unique id.
   ///
-  /// [Official Documentation](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)
   public func getDocument<T>(
     withID documentID: T.ID,
-    in indexUID: String,
+    in indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> T
   where
@@ -34,7 +34,7 @@ extension MeilisearchClient {
     T.ID: CustomStringConvertible
   {
     try await send(
-      .indexes / indexUID / .documents / documentID.description,
+      .indexes / indexUid / .documents / documentID.description,
       on: eventLoop
     )
   }
@@ -45,13 +45,13 @@ extension MeilisearchClient {
   @discardableResult
   public func addOrReplaceDocuments<T>(
     _ documents: [T],
-    to indexUID: String,
+    to indexUid: String,
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference where T: Encodable, T: Equatable {
     try await send(
-      .indexes / indexUID / .documents,
+      .indexes / indexUid / .documents,
       pipe(
         post(body: documents, encoder: encoder),
         primaryKey == nil ? identity : requestQueries(["primaryKey": primaryKey!])
@@ -66,13 +66,13 @@ extension MeilisearchClient {
   @discardableResult
   public func addOrUpdateDocuments<T>(
     _ documents: [T],
-    to indexUID: String,
+    to indexUid: String,
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference where T: Encodable, T: Equatable {
     try await send(
-      .indexes / indexUID / .documents,
+      .indexes / indexUid / .documents,
       pipe(
         put(body: documents, encoder: encoder),
         primaryKey == nil ? identity : requestQueries(["primaryKey": primaryKey!])
@@ -85,11 +85,11 @@ extension MeilisearchClient {
   @discardableResult
   public func delete(
     documentID: String,
-    in indexUID: String,
+    in indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference {
     try await send(
-      .indexes / indexUID / .documents / documentID,
+      .indexes / indexUid / .documents / documentID,
       requestMethod(.DELETE),
       on: eventLoop
     )
@@ -98,11 +98,11 @@ extension MeilisearchClient {
   /// Delete all documents in the specified index.
   @discardableResult
   public func deleteAll(
-    in indexUID: String,
+    in indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask {
     try await send(
-      .indexes / indexUID / .documents,
+      .indexes / indexUid / .documents,
       requestMethod(.DELETE),
       on: eventLoop
     )
@@ -112,12 +112,12 @@ extension MeilisearchClient {
   @discardableResult
   public func deleteBatch<T>(
     _ documentIDs: [T],
-    in indexUID: String,
+    in indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference
   where T: Encodable {
     try await send(
-      .indexes / indexUID / .documents / .deleteBatch,
+      .indexes / indexUid / .documents / .deleteBatch,
       post(body: documentIDs),
       on: eventLoop
     )
@@ -128,14 +128,14 @@ extension MeilisearchClient {
   @discardableResult
   public func addOrReplaceDocument<T>(
     _ document: T,
-    to indexUID: String,
+    to indexUid: String,
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference where T: Encodable, T: Equatable {
     try await addOrReplaceDocuments(
       [document],
-      to: indexUID,
+      to: indexUid,
       primaryKey: primaryKey,
       encoder: encoder,
       on: eventLoop
@@ -145,14 +145,14 @@ extension MeilisearchClient {
   @discardableResult
   public func addOrUpdateDocument<T>(
     _ document: T,
-    to indexUID: String,
+    to indexUid: String,
     primaryKey: String? = nil,
     encoder: JSONEncoder = defaultJSONEncoder,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference where T: Encodable, T: Equatable {
     try await addOrUpdateDocuments(
       [document],
-      to: indexUID,
+      to: indexUid,
       primaryKey: primaryKey,
       encoder: encoder,
       on: eventLoop

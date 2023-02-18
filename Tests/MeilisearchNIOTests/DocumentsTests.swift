@@ -1,5 +1,4 @@
 import XCTest
-
 @testable import MeilisearchNIO
 
 final class DocumentsTests: XCTestCase {
