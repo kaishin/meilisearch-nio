@@ -27,3 +27,19 @@ public struct Index: Codable, Equatable {
     self.primaryKey = primaryKey
   }
 }
+
+extension Index {
+  public struct UpdatePayload: Codable {
+    let primaryKey: String
+  }
+
+  public struct CreatePayload: Codable {
+    public let uid: String
+    public let primaryKey: String?
+
+    public init(uid: String, primaryKey: String? = nil) {
+      self.uid = uid
+      self.primaryKey = primaryKey
+    }
+  }
+}
