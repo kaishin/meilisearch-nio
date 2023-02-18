@@ -15,7 +15,7 @@ public struct IndexStats: Codable, Equatable {
   /// Number of documents in the given index.
   public let numberOfDocuments: Int
 
-  /// Returns if the Index is currenly being indexed.
+  /// Returns if the Index is currently being indexed.
   public let isIndexing: Bool
 
   /// Usage frequency for each Index field.
