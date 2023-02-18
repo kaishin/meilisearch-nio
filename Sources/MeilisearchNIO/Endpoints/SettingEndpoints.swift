@@ -4,6 +4,9 @@ import NIO
 import AsyncHTTPClient
 
 extension MeilisearchClient {
+  /// Get the settings of an index.
+  ///
+  /// SeeAlso: [Official Documentation](https://docs.meilisearch.com/reference/api/settings.html#all-settings)
   public func getSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
@@ -14,24 +17,32 @@ extension MeilisearchClient {
     )
   }
 
+  /// Update the settings of an index.
+  ///
+  /// Passing null to an index setting will reset it to its default value.
+  ///
+  /// Updates in the settings route are partial. This means that any parameters not provided in the body will be left unchanged.
+  ///
+  /// SeeAlso: [Official Documentation](https://docs.meilisearch.com/reference/api/settings.html#all-settings)
   @discardableResult
   public func updateSettings(
     with setting: Settings,
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings,
-      post(body: setting),
+      patch(body: setting),
       on: eventLoop
     )
   }
 
+  /// Reset all the settings of an index to their default value.
   @discardableResult
   public func resetSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings,
       requestMethod(.DELETE),
@@ -40,9 +51,123 @@ extension MeilisearchClient {
   }
 }
 
+// MARK: - Faceting
+extension MeilisearchClient {
+  public func getFacetingSettings(
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> Settings.Faceting {
+    try await send(
+      .indexes / indexID / .settings / .faceting,
+      on: eventLoop
+    )
+  }
+
+  @discardableResult
+  public func updateFacetingSettings(
+    _ faceting: Settings.Faceting,
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexID / .settings / .faceting,
+      patch(body: faceting),
+      on: eventLoop
+    )
+  }
+
+  @discardableResult
+  public func resetFacetingSettings(
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexID / .settings / .faceting,
+      requestMethod(.DELETE),
+      on: eventLoop
+    )
+  }
+}
+
+// MARK: - Pagination
+extension MeilisearchClient {
+  public func getPaginationSettings(
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> Settings.Pagination {
+    try await send(
+      .indexes / indexID / .settings / .pagination,
+      on: eventLoop
+    )
+  }
+
+  @discardableResult
+  public func updatePaginationSettings(
+    _ pagination: Settings.Pagination,
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexID / .settings / .pagination,
+      patch(body: pagination),
+      on: eventLoop
+    )
+  }
+
+  @discardableResult
+  public func resetPaginationSettings(
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexID / .settings / .pagination,
+      requestMethod(.DELETE),
+      on: eventLoop
+    )
+  }
+}
+
+// MARK: - Typo Tolerance
+extension MeilisearchClient {
+  public func getTypoToleranceSettings(
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> Settings.TypoTolerance {
+    try await send(
+      .indexes / indexID / .settings / .typoTolerance,
+      on: eventLoop
+    )
+  }
+
+  @discardableResult
+  public func updateTypoToleranceSettings(
+    _ typoTolerance: Settings.TypoTolerance,
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexID / .settings / .typoTolerance,
+      patch(body: typoTolerance),
+      on: eventLoop
+    )
+  }
+
+  @discardableResult
+  public func resetTypoToleranceSettings(
+    for indexID: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexID / .settings / .typoTolerance,
+      requestMethod(.DELETE),
+      on: eventLoop
+    )
+  }
+}
+
 // MARK: - Synonyms
 extension MeilisearchClient {
-  public func getSynonyms(
+  public func getSynonymsSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String: [String]] {
@@ -53,23 +178,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateSynonyms(
+  public func updateSynonymsSettings(
     _ synonyms: [String: [String]],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .synonyms,
-      post(body: synonyms),
+      put(body: synonyms),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetSynonyms(
+  public func resetSynonymsSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .synonyms,
       requestMethod(.DELETE),
@@ -80,7 +205,7 @@ extension MeilisearchClient {
 
 // MARK: - Stop Words
 extension MeilisearchClient {
-  public func getStopWords(
+  public func getStopWordsSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String] {
@@ -91,22 +216,22 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateStopWords(
+  public func updateStopWordsSettings(
     _ words: [String],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .stopWords,
-      post(body: words),
+      put(body: words),
       on: eventLoop
     )
   }
 
-  public func resetStopWords(
+  public func resetStopWordsSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .stopWords,
       requestMethod(.DELETE),
@@ -117,7 +242,7 @@ extension MeilisearchClient {
 
 // MARK: - Ranking Rules
 extension MeilisearchClient {
-  public func getRankingRules(
+  public func getRankingRulesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String] {
@@ -128,23 +253,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateRankingRules(
+  public func updateRankingRulesSettings(
     _ rules: [String],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .rankingRules,
-      post(body: rules),
+      put(body: rules),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetRankingRules(
+  public func resetRankingRulesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .rankingRules,
       requestMethod(.DELETE),
@@ -155,7 +280,7 @@ extension MeilisearchClient {
 
 // MARK: - Distinct Attribute
 extension MeilisearchClient {
-  public func getDistinctAttribute(
+  public func getDistinctAttributeSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> String? {
@@ -166,23 +291,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateDistinctAttribute(
+  public func updateDistinctAttributeSettings(
     _ attribute: String,
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .distinctAttribute,
-      post(body: DistinctAttributePayload(distinctAttribute: attribute)),
+      put(body: Settings.DistinctAttribute(attribute)),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetDistinctAttribute(
+  public func resetDistinctAttributeSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .distinctAttribute,
       requestMethod(.DELETE),
@@ -193,7 +318,7 @@ extension MeilisearchClient {
 
 // MARK: - Searchable Attributes
 extension MeilisearchClient {
-  public func getSearchableAttributes(
+  public func getSearchableAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String] {
@@ -204,23 +329,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateSearchableAttributes(
+  public func updateSearchableAttributesSettings(
     _ attributes: [String],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .searchableAttributes,
-      post(body: attributes),
+      put(body: attributes),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetSearchableAttributes(
+  public func resetSearchableAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .searchableAttributes,
       requestMethod(.DELETE),
@@ -231,7 +356,7 @@ extension MeilisearchClient {
 
 // MARK: - Displayed Attributes
 extension MeilisearchClient {
-  public func getDisplayedAttributes(
+  public func getDisplayedAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String] {
@@ -242,23 +367,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateDisplayedAttributes(
+  public func updateDisplayedAttributesSettings(
     _ attributes: [String],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .displayedAttributes,
-      post(body: attributes),
+      put(body: attributes),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetDisplayedAttributes(
+  public func resetDisplayedAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .displayedAttributes,
       requestMethod(.DELETE),
@@ -269,7 +394,7 @@ extension MeilisearchClient {
 
 // MARK: - Filterable Attributes
 extension MeilisearchClient {
-  public func getFilterableAttributes(
+  public func getFilterableAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String] {
@@ -280,23 +405,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateFilterableAttributes(
+  public func updateFilterableAttributesSettings(
     _ attributes: [String],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .filterableAttributes,
-      post(body: attributes),
+      put(body: attributes),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetFilterableAttributes(
+  public func resetFilterableAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .filterableAttributes,
       requestMethod(.DELETE),
@@ -307,7 +432,7 @@ extension MeilisearchClient {
 
 // MARK: - Sortable Attributes
 extension MeilisearchClient {
-  public func getSortableAttributes(
+  public func getSortableAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> [String] {
@@ -318,23 +443,23 @@ extension MeilisearchClient {
   }
 
   @discardableResult
-  public func updateSortableAttributes(
+  public func updateSortableAttributesSettings(
     _ attributes: [String],
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .sortableAttributes,
-      post(body: attributes),
+      put(body: attributes),
       on: eventLoop
     )
   }
 
   @discardableResult
-  public func resetSortableAttributes(
+  public func resetSortableAttributesSettings(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> OperationTask {
+  ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .sortableAttributes,
       requestMethod(.DELETE),
