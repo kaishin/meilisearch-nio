@@ -84,27 +84,27 @@ public struct DeleteTaskQueryParameters: Encodable, Hashable {
     }
 
     if let beforeEnqueuedAt {
-      queries["beforeEnqueuedAt"] = beforeEnqueuedAt.ISO8601Format().description
+      queries["beforeEnqueuedAt"] = Formatter.iso8601.string(from: beforeEnqueuedAt)  
     }
 
     if let beforeStartedAt {
-      queries["beforeStartedAt"] = beforeStartedAt.ISO8601Format().description
+      queries["beforeStartedAt"] = Formatter.iso8601.string(from: beforeStartedAt)  
     }
 
     if let beforeFinishedAt {
-      queries["beforeFinishedAt"] = beforeFinishedAt.ISO8601Format().description
+      queries["beforeFinishedAt"] = Formatter.iso8601.string(from: beforeFinishedAt)  
     }
 
     if let afterEnqueuedAt {
-      queries["afterEnqueuedAt"] = afterEnqueuedAt.ISO8601Format().description
+      queries["afterEnqueuedAt"] = Formatter.iso8601.string(from: afterEnqueuedAt)  
     }
 
     if let afterStartedAt {
-      queries["afterStartedAt"] = afterStartedAt.ISO8601Format().description
+      queries["afterStartedAt"] = Formatter.iso8601.string(from: afterStartedAt)  
     }
 
     if let afterFinishedAt {
-      queries["afterFinishedAt"] = afterFinishedAt.ISO8601Format().description
+      queries["afterFinishedAt"] = Formatter.iso8601.string(from: afterFinishedAt)  
     }
 
     return queries

@@ -1,0 +1,36 @@
+name: Run Tests
+
+concurrency:
+  group: tests
+  cancel-in-progress: true
+
+on: 
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: swift:5.7-jammy
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Restore Build Cache 
+        uses: actions/cache@v3
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Run Test
+        env:
+          SWIFT_DETERMINISTIC_HASHING: 1
+        run: | 
+          swift package resolve
+          swift test --sanitize=thread
