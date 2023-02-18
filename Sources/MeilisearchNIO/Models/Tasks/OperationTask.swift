@@ -89,7 +89,7 @@ public struct OperationTask: Decodable, Hashable {
       self.details = .documentAdditionOrUpdate(details)
 
     case .documentDeletion:
-      let details = try container.decode(Details.DocumentDeletetion.self, forKey: .details)
+      let details = try container.decode(Details.DocumentDeletion.self, forKey: .details)
       self.details = .documentDeletion(details)
 
     case .dumpCreation:
@@ -133,7 +133,7 @@ public struct OperationTask: Decodable, Hashable {
 extension OperationTask {
   public enum Details: Codable, Hashable {
     case documentAdditionOrUpdate(DocumentAdditionOrUpdate)
-    case documentDeletion(DocumentDeletetion)
+    case documentDeletion(DocumentDeletion)
     case dumpCreation(DumpCreation)
     case indexCreation(IndexCreation)
     case indexDeletion(IndexDeletion)
@@ -152,7 +152,7 @@ extension OperationTask {
       public let indexedDocuments: Int?
     }
 
-    public struct DocumentDeletetion: Codable, Hashable {
+    public struct DocumentDeletion: Codable, Hashable {
       /// Number of documents queued for deletion.
       public let providedIds: Int?
 
@@ -191,7 +191,7 @@ extension OperationTask {
       /// If the API key used for the request doesn’t have access to an index, tasks relating to that index will not be included in matchedTasks
       public let matchedTasks: Int
 
-      /// The number of tasks successfully canceled. If the task cancelation fails, this will be 0.
+      /// The number of tasks successfully canceled. If the task cancellation fails, this will be 0.
       /// Nil when the task status is enqueued or processing
       public let canceledTasks: Int?
 
@@ -230,6 +230,14 @@ extension OperationTask {
 
     public var isCompleted: Bool {
       self != .enqueued && self != .processing
+    }
+
+    public var error: ErrorResponse? {
+      if case let .failed(error) = self {
+        return error
+      } else {
+        return nil
+      }
     }
   }
 
