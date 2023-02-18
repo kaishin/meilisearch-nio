@@ -70,15 +70,18 @@ extension URLPath {
 
 extension String {
   static let authorization = "authorization"
+  static let cancel = "cancel"
   static let deleteBatch = "delete-batch"
   static let displayedAttributes = "displayed-attribute"
   static let distinctAttribute = "distinct-attribute"
   static let documents = "documents"
   static let dumps = "dumps"
+  static let faceting = "faceting"
   static let filterableAttributes  = "filterable-attributes"
   static let health = "health"
   static let indexes = "indexes"
   static let keys = "keys"
+  static let pagination = "pagination"
   static let rankingRules = "ranking-rules"
   static let search = "search"
   static let searchableAttributes = "searchable-attributes"
@@ -90,5 +93,6 @@ extension String {
   static let synonyms = "synonyms"
   static let swapIndexes = "swap-indexes"
   static let tasks = "tasks"
+  static let typoTolerance = "typo-tolerance"
   static let version = "version"
 }
