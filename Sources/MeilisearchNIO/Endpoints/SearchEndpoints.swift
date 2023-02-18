@@ -14,13 +14,13 @@ extension MeilisearchClient {
   ///
   /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/search.html#search-in-an-index-with-post-route)
   public func search<T>(
-    in indexUID: String,
+    in indexUid: String,
     with params: SearchParameters,
     decoder: JSONDecoder? = nil,
     on eventLoop: EventLoop? = nil
   ) async throws -> SearchResult<T> where T: Codable, T: Equatable {
     try await send(
-      .indexes / indexUID / .search,
+      .indexes / indexUid / .search,
       post(body: params),
       on: eventLoop
     )
