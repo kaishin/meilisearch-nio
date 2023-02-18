@@ -9,10 +9,10 @@ extension MeilisearchClient {
   ///   - indexID: The index UID to search in.
   ///   - eventLoop: The event loop to run the query on.
   /// - Returns: Stats of a specific index.
-  public func getStats(
+  public func getIndexStats(
     for indexID: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> Stat {
+  ) async throws -> IndexStats {
     try await send(
       .indexes / indexID / .stats,
       on: eventLoop
@@ -24,7 +24,7 @@ extension MeilisearchClient {
   /// - Returns: Stats of all indexes.
   public func getAll(
     on eventLoop: EventLoop? = nil
-  ) async throws -> AllStats {
+  ) async throws -> Stats {
     try await send(
       .stats,
       on: eventLoop

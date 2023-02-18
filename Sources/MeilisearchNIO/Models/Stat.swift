@@ -1,6 +1,6 @@
 import Foundation
 
-public struct AllStats: Codable, Equatable {
+public struct Stats: Codable, Equatable {
   /// Size of the whole database, in bytes.
   public let databaseSize: Int
 
@@ -8,10 +8,10 @@ public struct AllStats: Codable, Equatable {
   public let lastUpdate: Date?
 
   /// Dictionary of all Indexes containing the stat for each Index.
-  public let indexes: [String: Stat]
+  public let indexes: [String: IndexStats]
 }
 
-public struct Stat: Codable, Equatable {
+public struct IndexStats: Codable, Equatable {
   /// Number of documents in the given index.
   public let numberOfDocuments: Int
 
