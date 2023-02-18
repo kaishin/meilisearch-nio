@@ -6,7 +6,7 @@ import AsyncHTTPClient
 extension MeilisearchClient {
   /// List all indexes. Results can be paginated by using the offset and limit query parameters.
   ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
   public func listIndexes(
     on eventLoop: EventLoop? = nil,
     offset: Int = 0,
@@ -23,28 +23,28 @@ extension MeilisearchClient {
 
   /// Get information about an index.
   ///
-  /// [Official documentation]( https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
+  /// - SeeAlso: [Official documentation]( https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
   public func getIndex(
-    _ indexUID: String,
+    _ indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> Index {
     try await send(
-      .indexes / indexUID,
+      .indexes / indexUid,
       on: eventLoop
     )
   }
 
   /// Create an index.
   ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)
   @discardableResult
   public func createIndex(
-    _ indexUID: String,
+    _ indexUid: String,
     primaryKey: String? = nil,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference {
-    let payload = CreateIndexPayload(
-      uid: indexUID,
+    let payload = Index.CreatePayload(
+      uid: indexUid,
       primaryKey: primaryKey
     )
 
@@ -56,10 +56,10 @@ extension MeilisearchClient {
 
   /// Create an index.
   ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)
   @discardableResult
   public func createIndex(
-    _ payload: CreateIndexPayload,
+    _ payload: Index.CreatePayload,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference {
     try await send(
@@ -71,17 +71,17 @@ extension MeilisearchClient {
 
   /// Update an index. You can freely update the primary key of an index as long as it contains no documents.
   ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index)
   @discardableResult
   public func updateIndex(
-    _ indexUID: String,
+    _ indexUid: String,
     primaryKey: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference {
-    let payload = UpdateIndexPayload(primaryKey: primaryKey)
+    let payload = Index.UpdatePayload(primaryKey: primaryKey)
 
     return try await send(
-      .indexes / indexUID,
+      .indexes / indexUid,
       patch(body: payload),
       on: eventLoop
     )
@@ -89,13 +89,13 @@ extension MeilisearchClient {
 
   /// Delete an index.
   ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)
   public func deleteIndex(
-    _ indexUID: String,
+    _ indexUid: String,
     on eventLoop: EventLoop? = nil
   ) async throws -> OperationTask.Reference {
     return try await send(
-      .indexes / indexUID,
+      .indexes / indexUid,
       deleteRequest,
       on: eventLoop
     )
@@ -103,7 +103,7 @@ extension MeilisearchClient {
 
   /// Swap the documents, settings, and task history of two or more indexes.
   ///
-  /// [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#swap-indexes)
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/indexes.html#swap-indexes)
   public func swapIndexes(
     from fromUid: String,
     to toUid: String,
