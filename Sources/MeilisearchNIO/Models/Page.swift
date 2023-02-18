@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Page<T: Codable>: Codable {
+public struct Page<T: Decodable>: Decodable {
   /// An array of resources
   public let results: [T]
 
