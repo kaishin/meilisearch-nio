@@ -65,19 +65,19 @@ public struct CancelTaskQueryParameters: Encodable, Hashable {
     }
 
     if let beforeEnqueuedAt {
-      queries["beforeEnqueuedAt"] = beforeEnqueuedAt.formatted(.iso8601)
+      queries["beforeEnqueuedAt"] = Formatter.iso8601.string(from: beforeEnqueuedAt)
     }
 
     if let beforeStartedAt {
-      queries["beforeStartedAt"] = beforeStartedAt.formatted(.iso8601)  
+      queries["beforeStartedAt"] = Formatter.iso8601.string(from: beforeStartedAt)  
     }
 
     if let afterEnqueuedAt {
-      queries["afterEnqueuedAt"] = afterEnqueuedAt.formatted(.iso8601)
+      queries["afterEnqueuedAt"] = Formatter.iso8601.string(from: afterEnqueuedAt)
     }
 
     if let afterStartedAt {
-      queries["afterStartedAt"] = afterStartedAt.formatted(.iso8601)
+      queries["afterStartedAt"] = Formatter.iso8601.string(from: afterStartedAt)
     }
 
     return queries
