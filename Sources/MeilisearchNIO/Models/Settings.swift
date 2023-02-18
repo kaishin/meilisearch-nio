@@ -1,7 +1,9 @@
 import Foundation
 
 public struct Settings: Codable, Hashable {
-  /// Typo tolerance helps users find relevant results even when their search queries contain spelling mistakes or typos, for example, typing 'phnoe' instead of 'phone'. [Official Documentation](https://docs.meilisearch.com/learn/configuration/typo_tolerance.html#configuring-typo-tolerance)
+  /// Typo tolerance helps users find relevant results even when their search queries contain spelling mistakes or typos.
+  ///
+  /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/learn/configuration/typo_tolerance.html#configuring-typo-tolerance)
   public struct TypoTolerance: Codable, Hashable {
     /// The typo tolerance setting.
     public struct MinWordSizeForTypos: Codable, Hashable {
@@ -92,5 +94,15 @@ public struct Settings: Codable, Hashable {
     self.typoTolerance = typoTolerance
     self.pagination = pagination
     self.faceting = faceting
+  }
+}
+
+extension Settings {
+  public struct DistinctAttribute: Codable {
+    let distinctAttribute: String
+
+    init(_ distinctAttribute: String) {
+      self.distinctAttribute = distinctAttribute
+    }
   }
 }
