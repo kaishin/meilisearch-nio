@@ -101,6 +101,72 @@ extension MeilisearchClient {
 
 extension MeilisearchClient {
   func send(
+    _ endpoint: Endpoint,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> HTTPClient.Response {
+    let httpRequest = try httpRequest(
+      from: endpoint.request
+    )
+
+    return try await network.send(httpRequest, eventLoop)
+  }
+
+
+  func send<T>(
+    _ endpoint: Endpoint,
+    decoder: JSONDecoder? = nil,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> T where T: Decodable {
+    let response: HTTPClient.Response = try await send(endpoint, on: eventLoop)
+    let requestDecoder = decoder ?? Self.defaultJSONDecoder
+
+    guard
+      let responseData = response.body
+    else {
+      throw MeilisearchNIOError.missingResponseData
+    }
+
+    if 400...599 ~= response.status.code {
+      if let errorResponse = try? requestDecoder.decode(
+        ErrorResponse.self,
+        from: responseData
+      ) {
+        throw errorResponse
+      }
+    }
+
+    return try requestDecoder.decode(T.self, from: responseData)
+  }
+
+  func send(
+    ignoringResponseData endpoint: Endpoint,
+    decoder: JSONDecoder? = nil,
+    on eventLoop: EventLoop? = nil
+  ) async throws {
+    let response: HTTPClient.Response = try await send(endpoint, on: eventLoop)
+
+    if 400...599 ~= response.status.code {
+      let requestDecoder = decoder ?? Self.defaultJSONDecoder
+
+      guard
+        let responseData = response.body
+      else {
+        throw MeilisearchNIOError.missingResponseData
+      }
+
+      if let errorResponse = try? requestDecoder.decode(
+        ErrorResponse.self,
+        from: responseData
+      ) {
+        throw errorResponse
+      }
+    }
+  }
+}
+
+
+extension MeilisearchClient {
+  func send(
     _ path: URLPath,
     _ middleware: @escaping RequestMiddleware = identity,
     on eventLoop: EventLoop? = nil
@@ -111,6 +177,7 @@ extension MeilisearchClient {
 
     return try await network.send(httpRequest, eventLoop)
   }
+
 
   func send<T>(
     _ path: URLPath,
@@ -139,8 +206,8 @@ extension MeilisearchClient {
     return try requestDecoder.decode(T.self, from: responseData)
   }
 
-    func sendIgnoringResponseData(
-    _ path: URLPath,
+  func send(
+    ignoringResponseData path: URLPath,
     _ middleware: @escaping RequestMiddleware = identity,
     decoder: JSONDecoder? = nil,
     on eventLoop: EventLoop? = nil
@@ -157,29 +224,6 @@ extension MeilisearchClient {
       }
 
       if let errorResponse = try? requestDecoder.decode(
-        ErrorResponse.self,
-        from: responseData
-      ) {
-        throw errorResponse
-      }
-    }
-  }
-
-  func send(
-    _ path: URLPath,
-    _ middleware: @escaping RequestMiddleware = identity,
-    on eventLoop: EventLoop? = nil
-  ) async throws {
-    let response: HTTPClient.Response = try await send(path, middleware, on: eventLoop)
-
-    guard 
-      let responseData = response.body
-    else {
-      throw MeilisearchNIOError.missingResponseData
-    }
-
-    if 400...599 ~= response.status.code {
-      if let errorResponse = try? Self.defaultJSONDecoder.decode(
         ErrorResponse.self,
         from: responseData
       ) {

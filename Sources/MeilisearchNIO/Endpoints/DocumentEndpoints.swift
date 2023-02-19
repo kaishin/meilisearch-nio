@@ -13,8 +13,7 @@ extension MeilisearchClient {
     on eventLoop: EventLoop? = nil
   ) async throws -> Page<T> where T: Codable, T: Equatable {
     try await send(
-      .indexes / indexUid / .documents,
-      requestQueries(getParameters.toQueryParameters()),
+      .getAllDocuments(indexUid: indexUid, getParameters: getParameters),
       on: eventLoop
     )
   }

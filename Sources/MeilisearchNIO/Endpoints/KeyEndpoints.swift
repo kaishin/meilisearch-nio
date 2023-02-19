@@ -67,8 +67,8 @@ extension MeilisearchClient {
     _ payload: Key.UpdatePayload,
     on eventLoop: EventLoop? = nil
   ) async throws {
-    try await sendIgnoringResponseData(
-      .keys / keyOrUid,
+    try await send(
+      ignoringResponseData: .keys / keyOrUid,
       patch(body: payload),
       on: eventLoop
     )

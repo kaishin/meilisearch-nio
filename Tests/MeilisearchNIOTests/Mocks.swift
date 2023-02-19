@@ -13,7 +13,7 @@ extension NetworkClient {
         status: status, 
         version: .http1_1, 
         headers: [:],
-        body: try? .from(response)
+        body: .from(response)
       )
     }
   }

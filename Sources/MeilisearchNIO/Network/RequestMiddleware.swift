@@ -2,8 +2,6 @@ import Foundation
 import NIOHTTP1
 import NIO
 
-typealias RequestMiddleware = (Request) throws -> (Request)
-
 // MARK: - Property Transforms
 var identity: RequestMiddleware = { $0 }
 
