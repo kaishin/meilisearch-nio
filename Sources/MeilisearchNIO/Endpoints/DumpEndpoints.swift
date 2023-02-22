@@ -12,8 +12,9 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .dumps,
-      postRequest,
       on: eventLoop
-    )
+    ) {
+      postRequest
+    }
   }
 }

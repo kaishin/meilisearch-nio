@@ -21,8 +21,9 @@ extension MeilisearchClient {
   ) async throws -> SearchResult<T> where T: Codable, T: Equatable {
     try await send(
       .indexes / indexUid / .search,
-      post(body: params),
       on: eventLoop
-    )
+    ) {
+      post(body: params)
+    }
   }
 }

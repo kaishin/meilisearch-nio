@@ -100,28 +100,31 @@ extension MeilisearchClient {
 }
 
 extension MeilisearchClient {
-  func send(
-    _ path: URLPath,
-    _ middleware: @escaping RequestMiddleware = identity,
+  private func send(
+    _ request: Request,
     on eventLoop: EventLoop? = nil
   ) async throws -> HTTPClient.Response {
-    let httpRequest = try httpRequest(
-      from: middleware(.init(path: path))
+    return try await network.send(
+      try httpRequest(from: request),
+      eventLoop
     )
-
-    return try await network.send(httpRequest, eventLoop)
   }
+
 
   func send<T>(
     _ path: URLPath,
-    _ middleware: @escaping RequestMiddleware = identity,
     decoder: JSONDecoder? = nil,
-    on eventLoop: EventLoop? = nil
+    on eventLoop: EventLoop? = nil,
+    @RequestBuilder builder: @escaping () -> RequestMiddleware = { identity }
   ) async throws -> T where T: Decodable {
-    let response: HTTPClient.Response = try await send(path, middleware, on: eventLoop)
+    let response = try await send(
+      try builder()(Request(path: path)),
+      on: eventLoop
+    )
+
     let requestDecoder = decoder ?? Self.defaultJSONDecoder
 
-    guard 
+    guard
       let responseData = response.body
     else {
       throw MeilisearchNIOError.missingResponseData
@@ -139,47 +142,27 @@ extension MeilisearchClient {
     return try requestDecoder.decode(T.self, from: responseData)
   }
 
-    func sendIgnoringResponseData(
-    _ path: URLPath,
-    _ middleware: @escaping RequestMiddleware = identity,
+  func send(
+    ignoringResponseData path: URLPath,
     decoder: JSONDecoder? = nil,
-    on eventLoop: EventLoop? = nil
+    on eventLoop: EventLoop? = nil,
+    @RequestBuilder builder: @escaping () -> RequestMiddleware = { identity }
   ) async throws {
-    let response: HTTPClient.Response = try await send(path, middleware, on: eventLoop)
- 
+    let response: HTTPClient.Response = try await send(
+      try builder()(Request(path: path)),
+      on: eventLoop
+    )
+
     if 400...599 ~= response.status.code {
       let requestDecoder = decoder ?? Self.defaultJSONDecoder
 
-      guard 
+      guard
         let responseData = response.body
       else {
         throw MeilisearchNIOError.missingResponseData
       }
 
       if let errorResponse = try? requestDecoder.decode(
-        ErrorResponse.self,
-        from: responseData
-      ) {
-        throw errorResponse
-      }
-    }
-  }
-
-  func send(
-    _ path: URLPath,
-    _ middleware: @escaping RequestMiddleware = identity,
-    on eventLoop: EventLoop? = nil
-  ) async throws {
-    let response: HTTPClient.Response = try await send(path, middleware, on: eventLoop)
-
-    guard 
-      let responseData = response.body
-    else {
-      throw MeilisearchNIOError.missingResponseData
-    }
-
-    if 400...599 ~= response.status.code {
-      if let errorResponse = try? Self.defaultJSONDecoder.decode(
         ErrorResponse.self,
         from: responseData
       ) {

@@ -7,16 +7,17 @@ extension MeilisearchClient {
   /// Get a set of documents.
   ///
   /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
-  public func getAllDocuments<T>(
+  public func getAllDocuments<T: Decodable>(
     with getParameters: GetParameters = .init(),
     in indexUid: String,
     on eventLoop: EventLoop? = nil
-  ) async throws -> Page<T> where T: Codable, T: Equatable {
+  ) async throws -> Page<T> {
     try await send(
       .indexes / indexUid / .documents,
-      requestQueries(getParameters.toQueryParameters()),
       on: eventLoop
-    )
+    ) {
+      requestQueries(getParameters.toQueryParameters())
+    }
   }
 
   /// Get one document using its unique id.
@@ -52,12 +53,14 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference where T: Encodable, T: Equatable {
     try await send(
       .indexes / indexUid / .documents,
-      pipe(
-        post(body: documents, encoder: encoder),
-        primaryKey == nil ? identity : requestQueries(["primaryKey": primaryKey!])
-      ),
       on: eventLoop
-    )
+    ) {
+      post(body: documents, encoder: encoder)
+
+      if let primaryKey {
+        requestQueries(["primaryKey": primaryKey])
+      }
+    }
   }
 
   /// Add a list of documents or update them if they already exist. If the provided index does not exist, it will be created.
@@ -73,12 +76,14 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference where T: Encodable, T: Equatable {
     try await send(
       .indexes / indexUid / .documents,
-      pipe(
-        put(body: documents, encoder: encoder),
-        primaryKey == nil ? identity : requestQueries(["primaryKey": primaryKey!])
-      ),
       on: eventLoop
-    )
+    ) {
+      post(body: documents, encoder: encoder)
+
+      if let primaryKey {
+        requestQueries(["primaryKey": primaryKey])
+      }
+    }
   }
 
   /// Delete one document based on its unique id.
@@ -90,9 +95,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexUid / .documents / documentID,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 
   /// Delete all documents in the specified index.
@@ -103,9 +109,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask {
     try await send(
       .indexes / indexUid / .documents,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 
   /// Delete a selection of documents based on an array of document IDs.
@@ -118,9 +125,10 @@ extension MeilisearchClient {
   where T: Encodable {
     try await send(
       .indexes / indexUid / .documents / .deleteBatch,
-      post(body: documentIDs),
       on: eventLoop
-    )
+    ) {
+      post(body: documentIDs)
+    }
   }
 }
 

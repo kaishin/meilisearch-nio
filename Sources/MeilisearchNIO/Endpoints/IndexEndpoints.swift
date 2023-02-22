@@ -14,11 +14,12 @@ extension MeilisearchClient {
   ) async throws -> Page<Index> {
     try await send(
       .indexes,
+      on: eventLoop
+    ) {
       requestQueries(
         ["offset": offset.description, "limit": limit.description]
-      ),
-      on: eventLoop
-    )
+      )
+    }
   }
 
   /// Get information about an index.
@@ -64,9 +65,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes,
-      post(body: payload),
       on: eventLoop
-    )
+    ) {
+      post(body: payload)
+    }
   }
 
   /// Update an index. You can freely update the primary key of an index as long as it contains no documents.
@@ -82,9 +84,10 @@ extension MeilisearchClient {
 
     return try await send(
       .indexes / indexUid,
-      patch(body: payload),
       on: eventLoop
-    )
+    ) {
+      patch(body: payload)
+    }
   }
 
   /// Delete an index.
@@ -96,9 +99,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     return try await send(
       .indexes / indexUid,
-      deleteRequest,
       on: eventLoop
-    )
+    ) {
+      deleteRequest
+    }
   }
 
   /// Swap the documents, settings, and task history of two or more indexes.
@@ -113,8 +117,9 @@ extension MeilisearchClient {
 
     return try await send(
       .swapIndexes,
-      post(body: payload),
       on: eventLoop
-    )
+    ) {
+      post(body: payload)
+    }
   }
 }
