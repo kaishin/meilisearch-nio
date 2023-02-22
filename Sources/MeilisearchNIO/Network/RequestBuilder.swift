@@ -11,28 +11,22 @@ struct RequestBuilder {
       }
     }
   }
-}
 
-struct Endpoint {
-  var request: Request
-
-  init(
-    path: URLPath,
-    @RequestBuilder builder: @escaping () -> RequestMiddleware
-  ) throws {
-    self.request = try builder()(Request(path: path))
+  static func buildOptional(
+    _ component: RequestMiddleware?
+  ) -> RequestMiddleware {
+    identity
   }
-}
 
-extension Endpoint {
-  static func getAllDocuments(
-    indexUid: String,
-    getParameters: GetParameters = .init()
-  ) throws -> Self {
-    try .init(
-      path: .indexes / indexUid / .documents
-    ) {
-      requestQueries(getParameters.toQueryParameters())
-    }
+  static func buildEither(
+    first component: @escaping RequestMiddleware
+  ) -> RequestMiddleware {
+    component
+  }
+
+  static func buildEither(
+    second component: @escaping RequestMiddleware
+  ) -> RequestMiddleware {
+    component
   }
 }

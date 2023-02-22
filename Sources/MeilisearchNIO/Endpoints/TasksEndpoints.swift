@@ -15,9 +15,10 @@ extension MeilisearchClient {
   ) async throws -> Page<OperationTask> {
     try await send(
       .tasks,
-      requestQueries(parameters.toQueryParameters()),
       on: eventLoop
-    )
+    ) {
+      requestQueries(parameters.toQueryParameters())
+    }
   }
 
   /// Get a single task.
@@ -50,9 +51,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       URLPath.tasks / .cancel,
-      requestQueries(parameters.toQueryParameters()),
       on: eventLoop
-    )
+    ) {
+      requestQueries(parameters.toQueryParameters())
+    }
   }
 
   /// Delete a finished (succeeded, failed, or canceled) task based on uid, status, type, indexUid, canceledBy, or date. Task deletion is an atomic transaction: either all tasks are successfully deleted, or none are.
@@ -69,8 +71,9 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       URLPath.tasks / .cancel,
-      requestQueries(parameters.toQueryParameters()),
       on: eventLoop
-    )
+    ) {
+      requestQueries(parameters.toQueryParameters())
+    }
   }
 }

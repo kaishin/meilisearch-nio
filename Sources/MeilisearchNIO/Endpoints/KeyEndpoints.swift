@@ -13,9 +13,10 @@ extension MeilisearchClient {
   ) async throws -> Page<Key> {
     try await send(
       .keys,
-      bearerAuth(masterKey),
       on: eventLoop
-    )
+    ) {
+      bearerAuth(masterKey)
+    }
   }
 
   /// Get information on the specified key. Attempting to use this endpoint with a non-existent or deleted key will result in an error.
@@ -40,9 +41,10 @@ extension MeilisearchClient {
   ) async throws -> Key {
     try await send(
       .keys,
-      post(body: key),
       on: eventLoop
-    )
+    ) {
+      post(body: key)
+    }
   }
 
   /// Update the name and description of an API key. Any fields not present in the payload will remain unchanged.
@@ -55,9 +57,10 @@ extension MeilisearchClient {
   ) async throws -> Key {
     try await send(
       .keys / keyOrUid,
-      patch(body: payload),
       on: eventLoop
-    )
+    ) {
+      patch(body: payload)
+    }
   }
     /// Delete the specified API key.
   ///
@@ -69,8 +72,9 @@ extension MeilisearchClient {
   ) async throws {
     try await send(
       ignoringResponseData: .keys / keyOrUid,
-      patch(body: payload),
       on: eventLoop
-    )
+    ) {
+      patch(body: payload)
+    }
   }
 }

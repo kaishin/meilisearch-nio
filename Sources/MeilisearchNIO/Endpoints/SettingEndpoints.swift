@@ -32,9 +32,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings,
-      patch(body: setting),
       on: eventLoop
-    )
+    ) {
+      patch(body: setting)
+    }
   }
 
   /// Reset all the settings of an index to their default value.
@@ -45,9 +46,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -71,9 +73,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .faceting,
-      patch(body: faceting),
       on: eventLoop
-    )
+    ) {
+      patch(body: faceting)
+    }
   }
 
   @discardableResult
@@ -83,9 +86,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .faceting,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -109,9 +113,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .pagination,
-      patch(body: pagination),
       on: eventLoop
-    )
+    ) {
+      patch(body: pagination)
+    }
   }
 
   @discardableResult
@@ -121,9 +126,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .pagination,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -147,9 +153,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .typoTolerance,
-      patch(body: typoTolerance),
       on: eventLoop
-    )
+    ) {
+      patch(body: typoTolerance)
+    }
   }
 
   @discardableResult
@@ -159,9 +166,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .typoTolerance,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -185,9 +193,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .synonyms,
-      put(body: synonyms),
       on: eventLoop
-    )
+    ) {
+      put(body: synonyms)
+    }
   }
 
   @discardableResult
@@ -197,9 +206,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .synonyms,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -223,9 +233,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .stopWords,
-      put(body: words),
       on: eventLoop
-    )
+    ) {
+      put(body: words)
+    }
   }
 
   public func resetStopWordsSettings(
@@ -234,9 +245,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .stopWords,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -260,9 +272,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .rankingRules,
-      put(body: rules),
       on: eventLoop
-    )
+    ) {
+      put(body: rules)
+    }
   }
 
   @discardableResult
@@ -272,9 +285,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .rankingRules,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -298,9 +312,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .distinctAttribute,
-      put(body: Settings.DistinctAttribute(attribute)),
       on: eventLoop
-    )
+    ) {
+      put(body: Settings.DistinctAttribute(attribute))
+    }
   }
 
   @discardableResult
@@ -310,9 +325,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .distinctAttribute,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -336,9 +352,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .searchableAttributes,
-      put(body: attributes),
       on: eventLoop
-    )
+    ) {
+      put(body: attributes)
+    }
   }
 
   @discardableResult
@@ -348,9 +365,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .searchableAttributes,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -374,9 +392,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .displayedAttributes,
-      put(body: attributes),
       on: eventLoop
-    )
+    ) {
+      put(body: attributes)
+    }
   }
 
   @discardableResult
@@ -386,9 +405,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .displayedAttributes,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -412,9 +432,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .filterableAttributes,
-      put(body: attributes),
       on: eventLoop
-    )
+    ) {
+      put(body: attributes)
+    }
   }
 
   @discardableResult
@@ -424,9 +445,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .filterableAttributes,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }
 
@@ -450,9 +472,10 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .sortableAttributes,
-      put(body: attributes),
       on: eventLoop
-    )
+    ) {
+      put(body: attributes)
+    }
   }
 
   @discardableResult
@@ -462,8 +485,9 @@ extension MeilisearchClient {
   ) async throws -> OperationTask.Reference {
     try await send(
       .indexes / indexID / .settings / .sortableAttributes,
-      requestMethod(.DELETE),
       on: eventLoop
-    )
+    ) {
+      requestMethod(.DELETE)
+    }
   }
 }

@@ -81,100 +81,109 @@ func bearerAuth(_ token: String) -> RequestMiddleware {
   requestHeader(key: .authorization, value: "Bearer \(token)")
 }
 
-let jsonRequest = pipe(jsonContentRequest, acceptRequest)
+func requestMiddleware(
+  @RequestBuilder build: () -> RequestMiddleware
+) -> RequestMiddleware {
+  build()
+}
 
-let postRequest: RequestMiddleware = pipe(
-  requestMethod(.POST),
-  jsonRequest
-)
+var jsonRequest = requestMiddleware {
+  jsonContentRequest
+  acceptRequest
+}
 
-let putRequest: RequestMiddleware = pipe(
-  requestMethod(.PUT),
+let postRequest = requestMiddleware {
+  requestMethod(.POST)
   jsonRequest
-)
+}
 
-let patchRequest: RequestMiddleware = pipe(
-  requestMethod(.PATCH),
+let putRequest = requestMiddleware {
+  requestMethod(.PUT)
   jsonRequest
-)
+}
 
-let deleteRequest: RequestMiddleware = pipe(
-  requestMethod(.DELETE),
+let patchRequest = requestMiddleware {
+  requestMethod(.PATCH)
   jsonRequest
-)
+}
+
+let deleteRequest = requestMiddleware {
+  requestMethod(.DELETE)
+  jsonRequest
+}
 
 func post<T>(
   body: T,
   encoder: JSONEncoder = .init()
 ) -> RequestMiddleware where T: Encodable {
-  pipe(
-    postRequest,
+  requestMiddleware {
+    postRequest
     requestBody(body)
-  )
+  }
 }
 
 func post(
   data: Data
 ) -> RequestMiddleware {
-  pipe(
-    postRequest,
+  requestMiddleware {
+    postRequest
     requestBody(data)
-  )
+  }
 }
 
 func put<T>(
   body: T,
   encoder: JSONEncoder = .init()
 ) -> RequestMiddleware where T: Encodable {
-  pipe(
-    putRequest,
+  requestMiddleware {
+    putRequest
     requestBody(body)
-  )
+  }
 }
 
 func put(
   data: Data
 ) -> RequestMiddleware {
-  pipe(
-    putRequest,
+  requestMiddleware {
+    putRequest
     requestBody(data)
-  )
+  }
 }
 
 func patch<T>(
   body: T,
   encoder: JSONEncoder = .init()
 ) -> RequestMiddleware where T: Encodable {
-  pipe(
-    patchRequest,
+  requestMiddleware {
+    patchRequest
     requestBody(body)
-  )
+  }
 }
 
 func patch(
   data: Data
 ) -> RequestMiddleware {
-  pipe(
-    patchRequest,
+  requestMiddleware {
+    patchRequest
     requestBody(data)
-  )
+  }
 }
 
 func delete<T>(
   body: T,
   encoder: JSONEncoder = .init()
 ) -> RequestMiddleware where T: Encodable {
-  pipe(
-    deleteRequest,
+  requestMiddleware {
+    deleteRequest
     requestBody(body)
-  )
+  }
 }
 
 func delete(
   data: Data
 ) -> RequestMiddleware {
-  pipe(
-    deleteRequest,
+  requestMiddleware {
+    deleteRequest
     requestBody(data)
-  )
+  }
 }
