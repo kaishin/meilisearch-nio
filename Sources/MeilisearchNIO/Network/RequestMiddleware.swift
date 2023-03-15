@@ -118,7 +118,7 @@ func post<T>(
 ) -> RequestMiddleware where T: Encodable {
   requestMiddleware {
     postRequest
-    requestBody(body)
+    requestBody(body, encoder: encoder)
   }
 }
 
@@ -137,7 +137,7 @@ func put<T>(
 ) -> RequestMiddleware where T: Encodable {
   requestMiddleware {
     putRequest
-    requestBody(body)
+    requestBody(body, encoder: encoder)
   }
 }
 
@@ -156,7 +156,7 @@ func patch<T>(
 ) -> RequestMiddleware where T: Encodable {
   requestMiddleware {
     patchRequest
-    requestBody(body)
+    requestBody(body, encoder: encoder)
   }
 }
 
@@ -175,7 +175,7 @@ func delete<T>(
 ) -> RequestMiddleware where T: Encodable {
   requestMiddleware {
     deleteRequest
-    requestBody(body)
+    requestBody(body, encoder: encoder)
   }
 }
 
