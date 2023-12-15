@@ -44,6 +44,10 @@ public struct SearchParameters: Encodable, Hashable {
   /// Which attributes to crop.
   public let attributesToCrop: [String]?
 
+  /// A list of searchable attributes written as an array. Defaults to ["*"]
+  /// Note: Attributes passed passed must also be present in the searchableAttributes list.
+  public let attributesToSearchOn: [String]?
+
   /// Length used to crop field values.
   public let cropLength: Int?
 
@@ -62,6 +66,9 @@ public struct SearchParameters: Encodable, Hashable {
   /// Adds a _matchesPosition object to the search response that contains the location of each occurrence of queried terms across all fields.
   /// SeeAlso: [Official Documentation](https://docs.meilisearch.com/reference/api/search.html#show-matches-position)
   public let showMatchesPosition: Bool?
+
+  /// Whether to return the search ranking score or not.
+  public let showRankingScore: Bool?
 
   /// Filter queries by an attribute value.
   public let filter: Filter?
@@ -83,12 +90,14 @@ public struct SearchParameters: Encodable, Hashable {
     hitsPerPage: Int? = nil,
     attributesToRetrieve: [String]? = nil,
     attributesToCrop: [String]? = nil,
+    attributesToSearchOn: [String]? = nil,
     cropLength: Int? = nil,
     cropMarker: String? = nil,
     attributesToHighlight: [String]? = nil,
     highlightPreTag: String? = nil,
     highlightPostTag: String? = nil,
     showMatchesPosition: Bool? = nil,
+    showRankingScore: Bool? = nil,
     filter: Filter? = nil,
     sort: Filter? = nil,
     facets: [String]? = nil,
@@ -101,6 +110,7 @@ public struct SearchParameters: Encodable, Hashable {
     self.hitsPerPage = hitsPerPage
     self.attributesToRetrieve = attributesToRetrieve
     self.attributesToCrop = attributesToCrop
+    self.attributesToSearchOn = attributesToSearchOn
     self.cropLength = cropLength
     self.cropMarker = cropMarker
     self.attributesToHighlight = attributesToHighlight
@@ -111,6 +121,7 @@ public struct SearchParameters: Encodable, Hashable {
     self.highlightPreTag = highlightPreTag
     self.highlightPostTag = highlightPostTag
     self.showMatchesPosition = showMatchesPosition
+    self.showRankingScore = showRankingScore
   }
 
   public static func query(_ value: String) -> Self {
@@ -123,6 +134,7 @@ public struct SearchParameters: Encodable, Hashable {
       attributesToCrop,
       attributesToHighlight,
       attributesToRetrieve,
+      attributesToSearchOn,
       cropLength,
       cropMarker,
       facets,
@@ -134,6 +146,7 @@ public struct SearchParameters: Encodable, Hashable {
       matchingStrategy,
       page,
       showMatchesPosition,
+      showRankingScore,
       sort
   }
 }

@@ -62,6 +62,7 @@ extension URLPath {
   static let health = Self(.health)
   static let indexes = Self(.indexes)
   static let keys = Self(.keys)
+  static let multiSearch = Self(.multiSearch)
   static let stats = Self(.stats)
   static let swapIndexes = Self(.swapIndexes)
   static let tasks = Self(.tasks)
@@ -81,6 +82,7 @@ extension String {
   static let health = "health"
   static let indexes = "indexes"
   static let keys = "keys"
+  static let multiSearch = "multi-search"
   static let pagination = "pagination"
   static let rankingRules = "ranking-rules"
   static let search = "search"

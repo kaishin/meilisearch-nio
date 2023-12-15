@@ -30,11 +30,42 @@ public struct SearchResult<T>: Codable, Equatable
   public let hitsPerPage: Int?
 
   /// Distribution of the given facets.
-  public let facetsDistribution: [String: [String: Int]]?
+  public let facetDistribution: [String: [String: Int]]?
+
+  /// Maximum & minimum stats of a numeric facet.
+  public let facetStats: [String: FacetStats]?
 
   /// Time, in milliseconds, to process the query.
   public let processingTimeMs: Int
 
   /// Query string from the search.
   public let query: String
+
+  public init(
+    hits: [T],
+    offset: Int? = nil,
+    limit: Int? = nil,
+    page: Int? = nil,
+    estimatedTotalHits: Int? = nil,
+    totalHits: Int? = nil,
+    totalPages: Int? = nil,
+    hitsPerPage: Int? = nil,
+    facetDistribution: [String: [String: Int]]? = nil,
+    facetStats: [String: FacetStats]? = nil,
+    processingTimeMs: Int,
+    query: String
+  ) {
+    self.hits = hits
+    self.offset = offset
+    self.limit = limit
+    self.page = page
+    self.estimatedTotalHits = estimatedTotalHits
+    self.totalHits = totalHits
+    self.totalPages = totalPages
+    self.hitsPerPage = hitsPerPage
+    self.facetDistribution = facetDistribution
+    self.facetStats = facetStats
+    self.processingTimeMs = processingTimeMs
+    self.query = query
+  }
 }

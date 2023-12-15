@@ -20,5 +20,12 @@ public struct IndexStats: Codable, Equatable {
 
   /// Usage frequency for each Index field.
   public let fieldDistribution: [String: Int]
+}
 
+public struct FacetStats: Codable, Equatable {
+  /// The minimum value found in the given facet
+  public let min: Double
+
+  /// The maximum value found in the given facet
+  public let max: Double
 }
