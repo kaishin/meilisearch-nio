@@ -185,7 +185,7 @@ final class DocumentsTests: XCTestCase {
     XCTAssertEqual(task.indexUid, "games")
   }
 
-  func testDeletebatch() async throws {
+  func testDeleteBatch() async throws {
     let client = MeilisearchClient.mock(
       networkClient: .mock(
         response:
@@ -209,6 +209,38 @@ final class DocumentsTests: XCTestCase {
 
     let task = try await client.deleteBatch(
       ["1234"],
+      in: "games"
+    )
+
+    XCTAssertEqual(task.taskUid, 1)
+    XCTAssertEqual(task.type, .documentDeletion)
+    XCTAssertEqual(task.indexUid, "games")
+  }
+
+  func testDeleteWithFilter() async throws {
+    let client = MeilisearchClient.mock(
+      networkClient: .mock(
+        response:
+          """
+          {
+            "taskUid": 1,
+            "indexUid": "games",
+            "status": "enqueued",
+            "type": "documentDeletion",
+            "enqueuedAt": "2023-02-15T23:52:27.055169093Z"
+          }
+          """
+      )
+    )
+
+    struct Game: Codable, Equatable, Identifiable {
+      let uid: String
+      let name: String
+      var id: String { uid }
+    }
+
+    let task = try await client.delete(
+      .init(filter: "name = 'Bloodborne'"),
       in: "games"
     )
 

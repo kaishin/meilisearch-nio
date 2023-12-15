@@ -49,52 +49,30 @@ final class MultiSearchTests: XCTestCase {
       var id: String { uid }
     }
 
-    let response: MultiSearchResponse<Game> = .init(
-      results: [
-        MultiSearchResult(
-          indexUid: "games",
-          result: .init(
-            hits: [
-              Game(uid: "123", name: "Bloodborne")
-            ],
-            offset: 0,
-            limit: 20,
-            estimatedTotalHits: 1,
-            processingTimeMs: 0,
-            query: "blood"
-          )
-        ),
-        .init(
-          indexUid: "games",
-          result: .init(
-            hits: [
-              Game(uid: "456", name: "Dark Souls")
-            ],
-            offset: 0,
-            limit: 20,
-            estimatedTotalHits: 1,
-            processingTimeMs: 0,
-            query: "blood"
-          )
-        )
-      ]
+    let result: MultiSearchResponse<Game> = try await client.multiSearch(
+      with: .init(
+        queries: [
+          .init(indexUid: "games", parameters: .init(query: "blood")),
+          .init(indexUid: "games", parameters: .init(query: "souls"))
+        ]
+      )
     )
 
-    XCTAssertEqual(response.results.count, 2)
-    XCTAssertEqual(response.results[0].indexUid, "games")
-    XCTAssertEqual(response.results[0].result.hits.count, 1)
-    XCTAssertEqual(response.results[0].result.hits[0].name, "Bloodborne")
-    XCTAssertEqual(response.results[0].result.hits[0].id, "123")
-    XCTAssertEqual(response.results[0].result.query, "blood")
-    XCTAssertEqual(response.results[0].result.limit, 20)
-    XCTAssertEqual(response.results[0].result.estimatedTotalHits, 1)
+    XCTAssertEqual(result.results.count, 2)
+    XCTAssertEqual(result.results[0].indexUid, "games")
+    XCTAssertEqual(result.results[0].result.hits.count, 1)
+    XCTAssertEqual(result.results[0].result.hits[0].name, "Bloodborne")
+    XCTAssertEqual(result.results[0].result.hits[0].id, "123")
+    XCTAssertEqual(result.results[0].result.query, "blood")
+    XCTAssertEqual(result.results[0].result.limit, 20)
+    XCTAssertEqual(result.results[0].result.estimatedTotalHits, 1)
 
-    XCTAssertEqual(response.results[1].indexUid, "games")
-    XCTAssertEqual(response.results[1].result.hits.count, 1)
-    XCTAssertEqual(response.results[1].result.hits[0].name, "Dark Souls")
-    XCTAssertEqual(response.results[1].result.hits[0].id, "456")
-    XCTAssertEqual(response.results[1].result.query, "blood")
-    XCTAssertEqual(response.results[1].result.limit, 20)
-    XCTAssertEqual(response.results[1].result.estimatedTotalHits, 1)
+    XCTAssertEqual(result.results[1].indexUid, "games")
+    XCTAssertEqual(result.results[1].result.hits.count, 1)
+    XCTAssertEqual(result.results[1].result.hits[0].name, "Dark Souls")
+    XCTAssertEqual(result.results[1].result.hits[0].id, "456")
+    XCTAssertEqual(result.results[1].result.query, "souls")
+    XCTAssertEqual(result.results[1].result.limit, 20)
+    XCTAssertEqual(result.results[1].result.estimatedTotalHits, 1)
   }
 }

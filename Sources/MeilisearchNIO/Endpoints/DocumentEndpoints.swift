@@ -130,6 +130,21 @@ extension MeilisearchClient {
       post(body: documentIDs)
     }
   }
+
+  /// Delete a set of documents based on a filter.
+  @discardableResult
+  public func delete(
+    _ query: DocumentDeletionQuery,
+    in indexUid: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> OperationTask.Reference {
+    try await send(
+      .indexes / indexUid / .documents / .delete,
+      on: eventLoop
+    ) {
+      post(body: query)
+    }
+  }
 }
 
 extension MeilisearchClient {

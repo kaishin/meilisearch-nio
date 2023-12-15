@@ -72,6 +72,7 @@ extension URLPath {
 extension String {
   static let authorization = "authorization"
   static let cancel = "cancel"
+  static let delete = "delete"
   static let deleteBatch = "delete-batch"
   static let displayedAttributes = "displayed-attribute"
   static let distinctAttribute = "distinct-attribute"
