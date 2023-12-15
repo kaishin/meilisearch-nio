@@ -7,6 +7,7 @@ extension MeilisearchClient {
   /// Get a set of documents.
   ///
   /// - SeeAlso: [Official documentation](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
+  @available(*, deprecated, message: "Use `fetchDocuments` instead.")
   public func getAllDocuments<T: Decodable>(
     with getParameters: GetParameters = .init(),
     in indexUid: String,
@@ -17,6 +18,22 @@ extension MeilisearchClient {
       on: eventLoop
     ) {
       requestQueries(getParameters.toQueryParameters())
+    }
+  }
+
+  /// Get a set of documents.
+  ///
+  /// - SeeAlso: [Official documentation](https://www.meilisearch.com/docs/reference/api/documents#get-documents-with-post)
+  public func fetchDocuments<T: Decodable>(
+    with body: DocumentsQuery,
+    in indexUid: String,
+    on eventLoop: EventLoop? = nil
+  ) async throws -> Page<T> {
+    try await send(
+      .indexes / indexUid / .documents / .fetch,
+      on: eventLoop
+    ) {
+      post(body: body)
     }
   }
 

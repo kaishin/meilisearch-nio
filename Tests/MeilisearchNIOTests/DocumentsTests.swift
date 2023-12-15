@@ -34,6 +34,47 @@ final class DocumentsTests: XCTestCase {
     XCTAssertEqual(page.results[0].name, "Bloodborne")
   }
 
+  func testFetchDocuments() async throws {
+    let client = MeilisearchClient.mock(
+      networkClient: .mock(
+        response:
+          """
+          {
+            "results": [
+              {
+                "uid": "123",
+                "name": "Bloodborne"
+              }
+            ],
+            "offset": 0,
+            "limit": 50,
+            "total": 1
+          }
+          """
+      )
+    )
+
+    struct Game: Codable, Equatable, Identifiable {
+      let uid: String
+      let name: String
+      var id: String { uid }
+    }
+
+    let page: Page<Game> = try await client.fetchDocuments(
+      with: DocumentsQuery(
+        offset: 0,
+        limit: 50,
+        fields: [],
+        filter: .string("name = 'Bloodborne'")
+      ),
+      in: "games"
+    )
+
+    XCTAssertEqual(page.total, 1)
+    XCTAssertEqual(page.limit, 50)
+    XCTAssertEqual(page.results[0].name, "Bloodborne")
+  }
+
   func testGetDocument() async throws {
     let client = MeilisearchClient.mock(
       networkClient: .mock(

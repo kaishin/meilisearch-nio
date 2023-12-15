@@ -79,6 +79,7 @@ extension String {
   static let documents = "documents"
   static let dumps = "dumps"
   static let faceting = "faceting"
+  static let fetch = "fetch"
   static let filterableAttributes  = "filterable-attributes"
   static let health = "health"
   static let indexes = "indexes"

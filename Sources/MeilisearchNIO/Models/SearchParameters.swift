@@ -1,23 +1,6 @@
 import Foundation
 
 public struct SearchParameters: Encodable, Hashable {
-  public enum Filter: Encodable, Hashable {
-    case string(String)
-    case array([String])
-
-    public func encode(to encoder: Encoder) throws {
-      var container = encoder.singleValueContainer()
-
-      switch self {
-      case .string(let value):
-        try container.encode(value)
-
-      case .array(let value):
-        try container.encode(value)
-      }
-    }
-  }
-
   public enum MatchingStrategy: String, Encodable, Hashable {
     case all
     case last
@@ -70,11 +53,11 @@ public struct SearchParameters: Encodable, Hashable {
   /// Whether to return the search ranking score or not.
   public let showRankingScore: Bool?
 
-  /// Filter queries by an attribute value.
-  public let filter: Filter?
+  /// Filter on attributes values.
+  public let filter: String?
 
   /// Sort search results according to the attributes and sorting order (`asc` or `desc`) specified
-  public let sort: Filter?
+  public let sort: [String]?
 
   /// Retrieve the count of matching terms for each facet.
   public let facets: [String]?
@@ -98,8 +81,8 @@ public struct SearchParameters: Encodable, Hashable {
     highlightPostTag: String? = nil,
     showMatchesPosition: Bool? = nil,
     showRankingScore: Bool? = nil,
-    filter: Filter? = nil,
-    sort: Filter? = nil,
+    filter: String? = nil,
+    sort: [String]? = nil,
     facets: [String]? = nil,
     matchingStrategy: MatchingStrategy? = nil
   ) {
