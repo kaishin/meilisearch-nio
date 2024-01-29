@@ -15,7 +15,7 @@ struct RequestBuilder {
   static func buildOptional(
     _ component: RequestMiddleware?
   ) -> RequestMiddleware {
-    identity
+    component ?? identity
   }
 
   static func buildEither(
